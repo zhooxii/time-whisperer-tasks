@@ -1,7 +1,6 @@
 
 import React from 'react';
-import { format, isSameDay, isToday, parse } from 'date-fns';
-import { zhCN } from 'date-fns/locale';
+import { format, isSameDay, isToday } from 'date-fns';
 import { useTaskContext } from '@/context/TaskContext';
 import { getDaysInWeek, getHoursInDay } from '@/utils/dateUtils';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
@@ -68,7 +67,7 @@ const WeekView: React.FC = () => {
                 isSelected ? "text-blue-600" : "")
               }>
                 <CalendarIcon className="inline-block h-3 w-3 mr-1" />
-                {format(day, 'E', { locale: zhCN })}
+                {format(day, 'EEE')}
               </div>
               <div 
                 className={cn(
@@ -77,7 +76,7 @@ const WeekView: React.FC = () => {
                   isSelected ? "text-blue-600" : ""
                 )}
               >
-                {format(day, 'dd')}
+                {format(day, 'MM/dd')}
               </div>
             </div>
           );
@@ -102,7 +101,7 @@ const WeekView: React.FC = () => {
                   <div 
                     key={`${day}-${hour}`} 
                     className={cn(
-                      "border-r border-b p-1 relative min-h-[60px] calendar-cell",
+                      "border-r border-b p-1 relative min-h-[60px] calendar-cell hover:bg-blue-50 transition-all duration-200",
                       isToday ? "bg-blue-50/30" : "",
                       isCurrentHour ? "bg-blue-100/50" : ""
                     )}
@@ -113,7 +112,7 @@ const WeekView: React.FC = () => {
                       <div 
                         key={task.id}
                         className={cn(
-                          "text-xs p-1 mb-1 rounded border-l-2 flex items-center gap-1 task-item",
+                          "text-xs p-1 mb-1 rounded border-l-2 flex items-center gap-1 task-item hover:scale-[1.02] transition-all duration-200 animate-fade-in",
                           task.completed ? "line-through text-gray-400 bg-gray-100 border-gray-300" :
                           task.priority === 'high' ? "bg-red-100 border-task-high" :
                           task.priority === 'medium' ? "bg-amber-100 border-task-medium" :

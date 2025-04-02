@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { format, isSameMonth, isSameDay, isToday } from 'date-fns';
-import { zhCN } from 'date-fns/locale';
 import { useTaskContext } from '@/context/TaskContext';
 import { getDaysInMonth } from '@/utils/dateUtils';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -18,11 +17,7 @@ const MonthView: React.FC = () => {
   const firstDayOfMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
   
   // Get days of week names
-  const daysOfWeek = Array.from({ length: 7 }, (_, i) => {
-    const date = new Date();
-    date.setDate(date.getDate() - date.getDay() + i + 1); // Start from Monday
-    return format(date, 'E', { locale: zhCN });
-  });
+  const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   
   const handleCellClick = (date: Date) => {
     setSelectedDate(date);
@@ -58,7 +53,7 @@ const MonthView: React.FC = () => {
             <div 
               key={index} 
               className={cn(
-                "border-r border-b p-1 relative calendar-cell",
+                "border-r border-b p-1 relative calendar-cell transition-all hover:shadow-md",
                 isCurrentMonth ? "bg-white" : "bg-gray-50 text-gray-400",
                 isSelectedDay ? "bg-blue-100/70" : "",
                 isTodayDate ? "calendar-today" : ""
@@ -68,15 +63,15 @@ const MonthView: React.FC = () => {
               <div className="flex justify-between items-start">
                 <div 
                   className={cn(
-                    "h-8 w-8 flex items-center justify-center rounded-full date-number text-lg",
-                    isSelectedDay ? "bg-blue-500 text-white shadow-lg" : 
+                    "h-8 w-8 flex items-center justify-center rounded-full date-number text-lg transition-all",
+                    isSelectedDay ? "bg-blue-500 text-white shadow-lg animate-pulse" : 
                     isTodayDate ? "border-2 border-blue-500 text-blue-500" : ""
                   )}
                 >
                   {format(day, 'd')}
                 </div>
                 {dayTasks.length > 0 && (
-                  <div className="bg-blue-100 text-blue-700 rounded-full h-5 w-5 flex items-center justify-center text-xs">
+                  <div className="bg-blue-100 text-blue-700 rounded-full h-5 w-5 flex items-center justify-center text-xs animate-fade-in">
                     {dayTasks.length}
                   </div>
                 )}
@@ -87,7 +82,7 @@ const MonthView: React.FC = () => {
                   <div 
                     key={task.id}
                     className={cn(
-                      "text-xs mb-1 p-1 rounded truncate flex items-center gap-1 task-item",
+                      "text-xs mb-1 p-1 rounded truncate flex items-center gap-1 task-item hover:scale-[1.02] transition-all duration-200 animate-fade-in",
                       task.completed ? "line-through text-gray-400 bg-gray-100" :
                       task.priority === 'high' ? "bg-red-100 border-l-2 border-task-high" :
                       task.priority === 'medium' ? "bg-amber-100 border-l-2 border-task-medium" :
@@ -106,7 +101,7 @@ const MonthView: React.FC = () => {
                 {dayTasks.length > 3 && (
                   <div className="text-xs text-blue-500 flex items-center gap-1">
                     <Tag className="h-3 w-3" />
-                    <span>+{dayTasks.length - 3} 更多</span>
+                    <span>+{dayTasks.length - 3} more</span>
                   </div>
                 )}
               </div>

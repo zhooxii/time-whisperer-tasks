@@ -24,7 +24,6 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Separator } from '@/components/ui/separator';
 import { format } from 'date-fns';
-import { zhCN } from 'date-fns/locale';
 import TaskForm from '@/components/tasks/TaskForm';
 import TaskList from '@/components/tasks/TaskList';
 import { cn } from '@/lib/utils';
@@ -75,21 +74,21 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   };
 
   const viewOptions: { label: string; value: CalendarViewType; icon: React.ReactNode }[] = [
-    { label: '月', value: 'month', icon: <LayoutGrid className="h-4 w-4 mr-2" /> },
-    { label: '周', value: 'week', icon: <Columns className="h-4 w-4 mr-2" /> },
-    { label: '日', value: 'day', icon: <CalendarDays className="h-4 w-4 mr-2" /> },
+    { label: 'Month', value: 'month', icon: <LayoutGrid className="h-4 w-4 mr-2" /> },
+    { label: 'Week', value: 'week', icon: <Columns className="h-4 w-4 mr-2" /> },
+    { label: 'Day', value: 'day', icon: <CalendarDays className="h-4 w-4 mr-2" /> },
   ];
 
   const getDateTitle = () => {
     switch (calendarView) {
       case 'day':
-        return format(selectedDate, 'yyyy年MM月dd日 EEEE', { locale: zhCN });
+        return format(selectedDate, 'MM/dd EEEE');
       case 'week':
-        return `${format(selectedDate, 'yyyy年MM月', { locale: zhCN })}第${format(selectedDate, 'w', { locale: zhCN })}周`;
+        return `${format(selectedDate, 'MM/yyyy')} Week ${format(selectedDate, 'w')}`;
       case 'month':
-        return format(selectedDate, 'yyyy年MM月', { locale: zhCN });
+        return format(selectedDate, 'MM/yyyy');
       default:
-        return format(selectedDate, 'yyyy年MM月', { locale: zhCN });
+        return format(selectedDate, 'MM/yyyy');
     }
   };
 
@@ -100,14 +99,14 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         <div className="flex items-center">
           <Sheet open={isMobileSidebarOpen} onOpenChange={setIsMobileSidebarOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden text-blue-600 hover:bg-blue-100">
+              <Button variant="ghost" size="icon" className="md:hidden text-blue-600 hover:bg-blue-100 transition-colors">
                 <Menu size={20} />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="p-0">
+            <SheetContent side="left" className="p-0 animate-slide-in-right">
               <div className="p-4">
                 <h2 className="text-xl font-semibold mb-4 flex items-center text-blue-700">
-                  <Calendar className="mr-2 h-5 w-5" /> 时间管理
+                  <Calendar className="mr-2 h-5 w-5" /> Time Management
                 </h2>
                 <Separator className="my-4" />
                 <TaskList closeSidebar={() => setIsMobileSidebarOpen(false)} />
@@ -116,26 +115,26 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
           </Sheet>
           
           <h1 className="text-xl font-semibold flex items-center ml-2 md:ml-0 text-blue-700">
-            <Calendar className="mr-2 h-5 w-5 hidden md:inline-block" /> 时间管理
+            <Calendar className="mr-2 h-5 w-5 hidden md:inline-block" /> Time Management
           </h1>
         </div>
         
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" className="text-blue-600 hover:bg-blue-100">
+          <Button variant="ghost" size="icon" className="text-blue-600 hover:bg-blue-100 transition-colors">
             <Search className="h-5 w-5" />
           </Button>
           
-          <Button variant="ghost" size="icon" className="text-blue-600 hover:bg-blue-100">
+          <Button variant="ghost" size="icon" className="text-blue-600 hover:bg-blue-100 transition-colors">
             <Settings className="h-5 w-5" />
           </Button>
           
           <Sheet open={isTaskFormOpen} onOpenChange={setIsTaskFormOpen}>
             <SheetTrigger asChild>
-              <Button size="sm" className="rounded-full bg-blue-600 hover:bg-blue-700 tech-button">
-                <Plus className="h-4 w-4 mr-1" /> 新建任务
+              <Button size="sm" className="rounded-full bg-blue-600 hover:bg-blue-700 tech-button animate-fade-in">
+                <Plus className="h-4 w-4 mr-1" /> New Task
               </Button>
             </SheetTrigger>
-            <SheetContent>
+            <SheetContent className="animate-slide-in-right">
               <TaskForm onClose={() => setIsTaskFormOpen(false)} />
             </SheetContent>
           </Sheet>
@@ -158,15 +157,15 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                 variant="outline" 
                 size="sm" 
                 onClick={handleToday}
-                className="border-blue-200 text-blue-700 hover:bg-blue-50"
+                className="border-blue-200 text-blue-700 hover:bg-blue-50 transition-colors"
               >
-                今天
+                Today
               </Button>
               <Button 
                 variant="ghost" 
                 size="icon" 
                 onClick={handlePrevious}
-                className="text-blue-600 hover:bg-blue-50"
+                className="text-blue-600 hover:bg-blue-50 transition-colors"
               >
                 <ChevronLeft className="h-4 w-4" />
               </Button>
@@ -174,7 +173,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                 variant="ghost" 
                 size="icon" 
                 onClick={handleNext}
-                className="text-blue-600 hover:bg-blue-50"
+                className="text-blue-600 hover:bg-blue-50 transition-colors"
               >
                 <ChevronRight className="h-4 w-4" />
               </Button>
@@ -189,13 +188,13 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                 <Button 
                   variant="outline" 
                   size="sm"
-                  className="border-blue-200 text-blue-700 hover:bg-blue-50 flex items-center gap-1"
+                  className="border-blue-200 text-blue-700 hover:bg-blue-50 transition-colors flex items-center gap-1"
                 >
                   {viewOptions.find(option => option.value === calendarView)?.icon}
-                  {viewOptions.find(option => option.value === calendarView)?.label}视图
+                  {viewOptions.find(option => option.value === calendarView)?.label} View
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="bg-white border-blue-100 shadow-md">
+              <DropdownMenuContent align="end" className="bg-white border-blue-100 shadow-md animate-scale-in">
                 {viewOptions.map((option) => (
                   <DropdownMenuItem 
                     key={option.value}
@@ -206,7 +205,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
                     )}
                   >
                     {option.icon}
-                    {option.label}视图
+                    {option.label} View
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>

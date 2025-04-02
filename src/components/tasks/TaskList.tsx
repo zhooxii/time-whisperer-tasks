@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react';
 import { format, isToday, isTomorrow, isBefore } from 'date-fns';
-import { zhCN } from 'date-fns/locale';
 import { useTaskContext } from '@/context/TaskContext';
 import { Task } from '@/types';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -71,7 +70,7 @@ const TaskList: React.FC<TaskListProps> = ({ closeSidebar }) => {
         key={task.id} 
         className={`p-3 border rounded-md mb-2 ${
           task.completed ? 'bg-gray-50' : 'bg-white'
-        }`}
+        } hover:shadow-md transition-all duration-200 animate-fade-in`}
       >
         <div className="flex items-start gap-2">
           <Checkbox 
@@ -88,10 +87,10 @@ const TaskList: React.FC<TaskListProps> = ({ closeSidebar }) => {
             </div>
             <div className="flex items-center text-sm text-gray-500 mt-1">
               <Clock className="h-3 w-3 mr-1" />
-              {format(taskDate, 'HH:mm', { locale: zhCN })}
+              {format(taskDate, 'HH:mm')}
               <span className="mx-1">·</span>
               <Calendar className="h-3 w-3 mr-1" />
-              {format(taskDate, 'MM月dd日', { locale: zhCN })}
+              {format(taskDate, 'MM/dd')}
             </div>
             {task.description && (
               <p className="text-sm text-gray-600 mt-1">{task.description}</p>
@@ -105,17 +104,17 @@ const TaskList: React.FC<TaskListProps> = ({ closeSidebar }) => {
                     'border-task-low text-task-low'}
                 `}
               >
-                {task.priority === 'high' ? '高' : 
-                 task.priority === 'medium' ? '中' : '低'}
+                {task.priority === 'high' ? 'High' : 
+                 task.priority === 'medium' ? 'Medium' : 'Low'}
               </Badge>
               <Badge variant="outline">
-                {task.category === 'work' ? '工作' :
-                 task.category === 'personal' ? '个人' :
-                 task.category === 'shopping' ? '购物' :
-                 task.category === 'health' ? '健康' :
-                 task.category === 'finance' ? '财务' :
-                 task.category === 'education' ? '教育' :
-                 task.category === 'social' ? '社交' : '其他'}
+                {task.category === 'work' ? 'Work' :
+                 task.category === 'personal' ? 'Personal' :
+                 task.category === 'shopping' ? 'Shopping' :
+                 task.category === 'health' ? 'Health' :
+                 task.category === 'finance' ? 'Finance' :
+                 task.category === 'education' ? 'Education' :
+                 task.category === 'social' ? 'Social' : 'Other'}
               </Badge>
             </div>
           </div>
@@ -125,7 +124,7 @@ const TaskList: React.FC<TaskListProps> = ({ closeSidebar }) => {
                 <Button 
                   variant="ghost" 
                   size="icon" 
-                  className="h-7 w-7" 
+                  className="h-7 w-7 hover:bg-blue-50 transition-colors" 
                   onClick={() => setTaskToEdit(task)}
                 >
                   <Edit className="h-4 w-4" />
@@ -143,7 +142,7 @@ const TaskList: React.FC<TaskListProps> = ({ closeSidebar }) => {
             <Button 
               variant="ghost" 
               size="icon" 
-              className="h-7 w-7 text-red-500 hover:text-red-700 hover:bg-red-50" 
+              className="h-7 w-7 text-red-500 hover:text-red-700 hover:bg-red-50 transition-colors" 
               onClick={() => setTaskToDelete(task)}
             >
               <Trash2 className="h-4 w-4" />
@@ -158,7 +157,7 @@ const TaskList: React.FC<TaskListProps> = ({ closeSidebar }) => {
     if (tasksToRender.length === 0) return null;
     
     return (
-      <div className="mb-6">
+      <div className="mb-6 animate-fade-in">
         <div className="flex items-center mb-2">
           <h3 className="font-medium text-gray-700">{title}</h3>
           {badge && (
@@ -175,16 +174,16 @@ const TaskList: React.FC<TaskListProps> = ({ closeSidebar }) => {
   return (
     <div className="h-full flex flex-col">
       <div className="flex-1 overflow-y-auto">
-        {renderTaskSection('已过期', overdueTasks, 'red')}
-        {renderTaskSection('今日任务', todayTasks)}
-        {renderTaskSection('明日任务', tomorrowTasks)}
-        {renderTaskSection('即将进行', futureTasks)}
-        {renderTaskSection('已完成', completedTasks)}
+        {renderTaskSection('Overdue', overdueTasks, 'red')}
+        {renderTaskSection('Today', todayTasks)}
+        {renderTaskSection('Tomorrow', tomorrowTasks)}
+        {renderTaskSection('Upcoming', futureTasks)}
+        {renderTaskSection('Completed', completedTasks)}
         
         {tasks.length === 0 && (
-          <div className="text-center py-8 text-gray-500">
-            <p>暂无任务</p>
-            <p className="text-sm mt-1">点击右上角的"新建任务"来创建</p>
+          <div className="text-center py-8 text-gray-500 animate-fade-in">
+            <p>No tasks</p>
+            <p className="text-sm mt-1">Click "New Task" in the top right to create one</p>
           </div>
         )}
       </div>
@@ -193,15 +192,15 @@ const TaskList: React.FC<TaskListProps> = ({ closeSidebar }) => {
         open={taskToDelete !== null} 
         onOpenChange={(open) => !open && setTaskToDelete(null)}
       >
-        <AlertDialogContent>
+        <AlertDialogContent className="animate-scale-in">
           <AlertDialogHeader>
-            <AlertDialogTitle>确认删除</AlertDialogTitle>
+            <AlertDialogTitle>Confirm Delete</AlertDialogTitle>
             <AlertDialogDescription>
-              您确定要删除任务 "{taskToDelete?.title}" 吗？此操作无法撤销。
+              Are you sure you want to delete the task "{taskToDelete?.title}"? This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>取消</AlertDialogCancel>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction 
               onClick={() => {
                 if (taskToDelete) {
@@ -211,7 +210,7 @@ const TaskList: React.FC<TaskListProps> = ({ closeSidebar }) => {
               }}
               className="bg-red-500 hover:bg-red-600"
             >
-              删除
+              Delete
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

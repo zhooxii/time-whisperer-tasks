@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { format, isSameDay } from 'date-fns';
-import { zhCN } from 'date-fns/locale';
 import { useTaskContext } from '@/context/TaskContext';
 import { getHoursInDay } from '@/utils/dateUtils';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
@@ -70,7 +69,7 @@ const DayView: React.FC = () => {
       <div className="border-b sticky top-0 bg-blue-50/50 z-10 p-3 text-center">
         <div className="text-lg font-medium text-blue-800">
           <CalendarIcon className="inline-block mr-2 h-5 w-5" />
-          {format(selectedDate, 'yyyy年MM月dd日 EEEE', { locale: zhCN })}
+          {format(selectedDate, 'MM/dd EEEE')}
         </div>
       </div>
       
@@ -98,7 +97,7 @@ const DayView: React.FC = () => {
                     <div 
                       key={task.id}
                       className={cn(
-                        "p-2 mb-2 rounded border-l-2 task-item",
+                        "p-2 mb-2 rounded border-l-2 task-item animate-fade-in hover:scale-[1.02] transition-all duration-200",
                         task.completed ? "line-through text-gray-400 bg-gray-100 border-gray-300" :
                         task.priority === 'high' ? "bg-red-100 border-task-high" :
                         task.priority === 'medium' ? "bg-amber-100 border-task-medium" :
@@ -123,13 +122,13 @@ const DayView: React.FC = () => {
                       )}
                       <div className="text-xs text-gray-500 mt-1 flex items-center gap-1">
                         <TaskCategoryIcon category={task.category} />
-                        {task.category === 'work' ? '工作' :
-                         task.category === 'personal' ? '个人' :
-                         task.category === 'shopping' ? '购物' :
-                         task.category === 'health' ? '健康' :
-                         task.category === 'finance' ? '财务' :
-                         task.category === 'education' ? '教育' :
-                         task.category === 'social' ? '社交' : '其他'}
+                        {task.category === 'work' ? 'Work' :
+                         task.category === 'personal' ? 'Personal' :
+                         task.category === 'shopping' ? 'Shopping' :
+                         task.category === 'health' ? 'Health' :
+                         task.category === 'finance' ? 'Finance' :
+                         task.category === 'education' ? 'Education' :
+                         task.category === 'social' ? 'Social' : 'Other'}
                       </div>
                     </div>
                   ))}
