@@ -26,7 +26,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { format } from 'date-fns';
-import { zhCN } from 'date-fns/locale';
 import { CalendarIcon, Clock } from 'lucide-react';
 
 interface TaskFormProps {
@@ -35,20 +34,20 @@ interface TaskFormProps {
 }
 
 const priorityOptions: { value: TaskPriority; label: string }[] = [
-  { value: 'low', label: '低优先级' },
-  { value: 'medium', label: '中优先级' },
-  { value: 'high', label: '高优先级' },
+  { value: 'low', label: 'Low Priority' },
+  { value: 'medium', label: 'Medium Priority' },
+  { value: 'high', label: 'High Priority' },
 ];
 
 const categoryOptions: { value: TaskCategory; label: string }[] = [
-  { value: 'work', label: '工作' },
-  { value: 'personal', label: '个人' },
-  { value: 'shopping', label: '购物' },
-  { value: 'health', label: '健康' },
-  { value: 'finance', label: '财务' },
-  { value: 'education', label: '教育' },
-  { value: 'social', label: '社交' },
-  { value: 'other', label: '其他' },
+  { value: 'work', label: 'Work' },
+  { value: 'personal', label: 'Personal' },
+  { value: 'shopping', label: 'Shopping' },
+  { value: 'health', label: 'Health' },
+  { value: 'finance', label: 'Finance' },
+  { value: 'education', label: 'Education' },
+  { value: 'social', label: 'Social' },
+  { value: 'other', label: 'Other' },
 ];
 
 const hoursOptions = Array.from({ length: 24 }, (_, i) => ({
@@ -57,10 +56,10 @@ const hoursOptions = Array.from({ length: 24 }, (_, i) => ({
 }));
 
 const taskFormSchema = z.object({
-  title: z.string().min(1, '标题不能为空'),
+  title: z.string().min(1, 'Title cannot be empty'),
   description: z.string().optional(),
   dueDate: z.date({
-    required_error: '请选择日期',
+    required_error: 'Please select a date',
   }),
   dueHour: z.string(),
   priority: z.string(),
@@ -153,7 +152,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onClose }) => {
   return (
     <div className="h-full flex flex-col">
       <div className="px-1 py-2">
-        <h2 className="text-lg font-semibold">{task ? '编辑任务' : '创建新任务'}</h2>
+        <h2 className="text-lg font-semibold">{task ? 'Edit Task' : 'Create New Task'}</h2>
       </div>
       
       {showNaturalLanguageInput ? (
@@ -166,10 +165,10 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onClose }) => {
                 name="naturalLanguage"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>输入自然语言描述</FormLabel>
+                    <FormLabel>Enter natural language description</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="比如：下周一早上9点写周报"
+                        placeholder="e.g., Weekly report next Monday at 9am"
                         {...field}
                         className="w-full"
                       />
@@ -179,7 +178,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onClose }) => {
               />
               <div className="flex gap-2">
                 <Button type="submit" className="w-full">
-                  解析
+                  Parse
                 </Button>
                 <Button 
                   type="button"
@@ -187,7 +186,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onClose }) => {
                   onClick={() => setShowNaturalLanguageInput(false)} 
                   className="w-full"
                 >
-                  手动输入
+                  Manual Input
                 </Button>
               </div>
             </form>
@@ -201,9 +200,9 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onClose }) => {
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>标题</FormLabel>
+                  <FormLabel>Title</FormLabel>
                   <FormControl>
-                    <Input placeholder="任务标题" {...field} />
+                    <Input placeholder="Task title" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -215,9 +214,9 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onClose }) => {
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>描述（选填）</FormLabel>
+                  <FormLabel>Description (optional)</FormLabel>
                   <FormControl>
-                    <Textarea placeholder="任务描述" {...field} rows={3} />
+                    <Textarea placeholder="Task description" {...field} rows={3} />
                   </FormControl>
                 </FormItem>
               )}
@@ -229,7 +228,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onClose }) => {
                 name="dueDate"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>截止日期</FormLabel>
+                    <FormLabel>Due Date</FormLabel>
                     <Popover>
                       <PopoverTrigger asChild>
                         <FormControl>
@@ -239,9 +238,9 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onClose }) => {
                           >
                             <CalendarIcon className="mr-2 h-4 w-4" />
                             {field.value ? (
-                              format(field.value, 'yyyy-MM-dd', { locale: zhCN })
+                              format(field.value, 'MM/dd')
                             ) : (
-                              <span>选择日期</span>
+                              <span>Select date</span>
                             )}
                           </Button>
                         </FormControl>
@@ -266,11 +265,11 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onClose }) => {
                 name="dueHour"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>时间</FormLabel>
+                    <FormLabel>Time</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="选择时间" />
+                          <SelectValue placeholder="Select time" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -293,11 +292,11 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onClose }) => {
                 name="priority"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>优先级</FormLabel>
+                    <FormLabel>Priority</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="选择优先级" />
+                          <SelectValue placeholder="Select priority" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -318,11 +317,11 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onClose }) => {
                 name="category"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>分类</FormLabel>
+                    <FormLabel>Category</FormLabel>
                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="选择分类" />
+                          <SelectValue placeholder="Select category" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -347,9 +346,9 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onClose }) => {
                   onClose();
                 }
               }}>
-                {task ? '取消' : '自然语言'}
+                {task ? 'Cancel' : 'Natural Language'}
               </Button>
-              <Button type="submit">{task ? '更新' : '创建'}</Button>
+              <Button type="submit">{task ? 'Update' : 'Create'}</Button>
             </div>
           </form>
         </Form>

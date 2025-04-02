@@ -26,6 +26,7 @@ import { Separator } from '@/components/ui/separator';
 import { format } from 'date-fns';
 import TaskForm from '@/components/tasks/TaskForm';
 import TaskList from '@/components/tasks/TaskList';
+import SearchDialog from '@/components/search/SearchDialog';
 import { cn } from '@/lib/utils';
 
 interface AppLayoutProps {
@@ -36,6 +37,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const { selectedDate, setSelectedDate, calendarView, setCalendarView } = useTaskContext();
   const [isTaskFormOpen, setIsTaskFormOpen] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   const handlePrevious = () => {
     const newDate = new Date(selectedDate);
@@ -120,7 +122,12 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         </div>
         
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" className="text-blue-600 hover:bg-blue-100 transition-colors">
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="text-blue-600 hover:bg-blue-100 transition-colors animate-fade-in"
+            onClick={() => setIsSearchOpen(true)}
+          >
             <Search className="h-5 w-5" />
           </Button>
           
@@ -218,6 +225,9 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
           </div>
         </main>
       </div>
+
+      {/* Search Dialog */}
+      <SearchDialog open={isSearchOpen} onOpenChange={setIsSearchOpen} />
     </div>
   );
 };
