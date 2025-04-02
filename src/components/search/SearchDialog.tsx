@@ -92,9 +92,12 @@ const SearchDialog: React.FC<SearchDialogProps> = ({ open, onOpenChange }) => {
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-hidden p-0 gap-0">
+        <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-hidden p-0 gap-0 rounded-xl shadow-lg animate-scale-in">
           <DialogHeader className="px-6 pt-6 pb-2">
-            <DialogTitle className="text-xl font-semibold">Search Tasks</DialogTitle>
+            <DialogTitle className="text-xl font-semibold text-blue-700 flex items-center">
+              <Clock className="mr-2 h-5 w-5 text-blue-600" />
+              Search Tasks
+            </DialogTitle>
           </DialogHeader>
           
           <Command className="rounded-lg border border-none" shouldFilter={false}>
@@ -105,14 +108,14 @@ const SearchDialog: React.FC<SearchDialogProps> = ({ open, onOpenChange }) => {
               className="h-12 text-base"
             />
             
-            <CommandList className="max-h-[50vh] overflow-y-auto p-2">
+            <CommandList className="max-h-[50vh] overflow-y-auto p-4">
               {!searchQuery && recentSearches.length > 0 && (
-                <CommandGroup heading="Recent Searches" className="p-2">
+                <CommandGroup heading="Recent Searches" className="p-2 mb-2">
                   {recentSearches.map((search, index) => (
                     <CommandItem 
                       key={index} 
                       onSelect={() => setSearchQuery(search)}
-                      className="flex items-center gap-2 text-sm p-2 cursor-pointer hover:bg-blue-50 rounded-md transition-colors animate-fade-in"
+                      className="flex items-center gap-2 text-sm p-3 cursor-pointer hover:bg-blue-50 rounded-md transition-colors animate-fade-in"
                     >
                       <Clock className="h-4 w-4 text-blue-500" />
                       {search}
@@ -178,7 +181,11 @@ const SearchDialog: React.FC<SearchDialogProps> = ({ open, onOpenChange }) => {
           </Command>
           
           <div className="p-4 border-t flex justify-end">
-            <Button variant="outline" onClick={() => onOpenChange(false)}>
+            <Button 
+              variant="outline" 
+              onClick={() => onOpenChange(false)}
+              className="border-blue-200 text-blue-700 hover:bg-blue-50 transition-colors"
+            >
               Close
             </Button>
           </div>
