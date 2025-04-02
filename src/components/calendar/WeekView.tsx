@@ -8,6 +8,7 @@ import { Sheet, SheetContent } from '@/components/ui/sheet';
 import TaskForm from '@/components/tasks/TaskForm';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
+import { Calendar as CalendarIcon, Clock, CheckCircle2 } from 'lucide-react';
 
 const WeekView: React.FC = () => {
   const { tasks, selectedDate, setSelectedDate } = useTaskContext();
@@ -46,29 +47,37 @@ const WeekView: React.FC = () => {
 
   return (
     <div className="h-[calc(100vh-12rem)] flex flex-col">
-      <div className="grid grid-cols-8 border-b sticky top-0 bg-white z-10">
+      <div className="grid grid-cols-8 border-b sticky top-0 bg-blue-50/50 z-10">
         <div className="p-2 text-center text-sm font-medium border-r"></div>
         {days.map((day, index) => {
-          const isToday = isSameDay(day, new Date());
+          const isTodayDate = isSameDay(day, new Date());
+          const isSelected = isSameDay(day, selectedDate);
           
           return (
             <div 
               key={index} 
               className={cn(
                 "p-2 text-center border-r last:border-r-0",
-                isToday ? "bg-blue-50" : ""
+                isTodayDate ? "bg-blue-100" : "",
+                isSelected ? "bg-blue-50" : ""
               )}
             >
-              <div className="text-sm font-medium">
+              <div className={cn(
+                "text-sm font-medium",
+                isTodayDate ? "text-blue-700" : "",
+                isSelected ? "text-blue-600" : "")
+              }>
+                <CalendarIcon className="inline-block h-3 w-3 mr-1" />
                 {format(day, 'E', { locale: zhCN })}
               </div>
               <div 
                 className={cn(
-                  "text-xs mt-1",
-                  isToday ? "text-primary font-medium" : "text-gray-500"
+                  "date-number text-lg mt-1 font-bold",
+                  isTodayDate ? "text-blue-700" : "text-gray-600",
+                  isSelected ? "text-blue-600" : ""
                 )}
               >
-                {format(day, 'MM/dd')}
+                {format(day, 'dd')}
               </div>
             </div>
           );
@@ -79,7 +88,7 @@ const WeekView: React.FC = () => {
         <div className="grid grid-cols-8">
           {hours.map(hour => (
             <React.Fragment key={hour}>
-              <div className="border-r border-b p-1 text-xs text-right text-gray-500 sticky left-0 bg-white">
+              <div className="border-r border-b p-1 text-xs text-right text-blue-700 sticky left-0 bg-white date-number font-medium">
                 {hour}:00
               </div>
               
@@ -93,9 +102,9 @@ const WeekView: React.FC = () => {
                   <div 
                     key={`${day}-${hour}`} 
                     className={cn(
-                      "border-r border-b p-1 relative min-h-[60px]",
+                      "border-r border-b p-1 relative min-h-[60px] calendar-cell",
                       isToday ? "bg-blue-50/30" : "",
-                      isCurrentHour ? "bg-blue-50" : ""
+                      isCurrentHour ? "bg-blue-100/50" : ""
                     )}
                     onClick={() => handleCellClick(day, hour)}
                     ref={isCurrentHour ? currentTimeRef : null}
@@ -104,20 +113,24 @@ const WeekView: React.FC = () => {
                       <div 
                         key={task.id}
                         className={cn(
-                          "text-xs p-1 mb-1 rounded border-l-2",
+                          "text-xs p-1 mb-1 rounded border-l-2 flex items-center gap-1 task-item",
                           task.completed ? "line-through text-gray-400 bg-gray-100 border-gray-300" :
                           task.priority === 'high' ? "bg-red-100 border-task-high" :
                           task.priority === 'medium' ? "bg-amber-100 border-task-medium" :
                           "bg-green-100 border-task-low"
                         )}
                       >
-                        {task.title}
+                        {task.completed ? 
+                          <CheckCircle2 className="h-3 w-3 text-gray-400" /> : 
+                          <Clock className="h-3 w-3 text-blue-500" />
+                        }
+                        <span>{task.title}</span>
                       </div>
                     ))}
                     
                     {isCurrentHour && isToday && (
-                      <div className="absolute left-0 right-0 border-t-2 border-red-500 z-10" style={{ top: `${Math.floor((new Date().getMinutes() / 60) * 100)}%` }}>
-                        <div className="h-2 w-2 rounded-full bg-red-500 absolute -left-1 -top-1"></div>
+                      <div className="absolute left-0 right-0 border-t-2 border-blue-500 z-10" style={{ top: `${Math.floor((new Date().getMinutes() / 60) * 100)}%` }}>
+                        <div className="h-2 w-2 rounded-full bg-blue-500 absolute -left-1 -top-1 shadow-lg animate-pulse"></div>
                       </div>
                     )}
                   </div>
