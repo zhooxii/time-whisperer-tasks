@@ -8,7 +8,7 @@ import { Sheet, SheetContent } from '@/components/ui/sheet';
 import TaskForm from '@/components/tasks/TaskForm';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
-import { Clock, AlertCircle, BookOpen, CheckCircle2, Tag, Briefcase, Heart, ShoppingBag, Activity, Wallet, GraduationCap, Users } from 'lucide-react';
+import { Clock, AlertCircle, BookOpen, CheckCircle2, Tag, Briefcase, Heart, ShoppingBag, Activity, Wallet, GraduationCap, Users, Calendar as CalendarIcon } from 'lucide-react';
 
 const TaskCategoryIcon = ({ category }: { category: string }) => {
   switch (category) {
