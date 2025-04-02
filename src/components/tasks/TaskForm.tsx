@@ -68,6 +68,11 @@ const taskFormSchema = z.object({
   naturalLanguage: z.string().optional(),
 });
 
+// Create a separate schema for natural language input
+const nlFormSchema = z.object({
+  naturalLanguage: z.string().optional(),
+});
+
 const TaskForm: React.FC<TaskFormProps> = ({ task, onClose }) => {
   const { addTask, updateTask, parseTask } = useTaskContext();
   const [showNaturalLanguageInput, setShowNaturalLanguageInput] = useState(!task);
@@ -85,11 +90,18 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onClose }) => {
     },
   });
 
-  const handleNaturalLanguageSubmit = () => {
-    const nlInput = form.getValues('naturalLanguage');
-    if (!nlInput) return;
+  // Separate form for natural language input to avoid FormContext issues
+  const nlForm = useForm<z.infer<typeof nlFormSchema>>({
+    resolver: zodResolver(nlFormSchema),
+    defaultValues: {
+      naturalLanguage: '',
+    },
+  });
+
+  const handleNaturalLanguageSubmit = (values: z.infer<typeof nlFormSchema>) => {
+    if (!values.naturalLanguage) return;
     
-    const parsedTask = parseTask(nlInput);
+    const parsedTask = parseTask(values.naturalLanguage);
     
     if (parsedTask.title) {
       form.setValue('title', parsedTask.title);
@@ -146,27 +158,40 @@ const TaskForm: React.FC<TaskFormProps> = ({ task, onClose }) => {
       
       {showNaturalLanguageInput ? (
         <div className="mb-4">
-          <div className="space-y-2">
-            <FormLabel>输入自然语言描述</FormLabel>
-            <Input
-              placeholder="比如：下周一早上9点写周报"
-              value={form.getValues('naturalLanguage')}
-              onChange={(e) => form.setValue('naturalLanguage', e.target.value)}
-              className="w-full"
-            />
-            <div className="flex gap-2">
-              <Button onClick={handleNaturalLanguageSubmit} className="w-full">
-                解析
-              </Button>
-              <Button 
-                variant="outline" 
-                onClick={() => setShowNaturalLanguageInput(false)} 
-                className="w-full"
-              >
-                手动输入
-              </Button>
-            </div>
-          </div>
+          {/* Use the separate form context for natural language input */}
+          <Form {...nlForm}>
+            <form onSubmit={nlForm.handleSubmit(handleNaturalLanguageSubmit)} className="space-y-2">
+              <FormField
+                control={nlForm.control}
+                name="naturalLanguage"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>输入自然语言描述</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="比如：下周一早上9点写周报"
+                        {...field}
+                        className="w-full"
+                      />
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
+              <div className="flex gap-2">
+                <Button type="submit" className="w-full">
+                  解析
+                </Button>
+                <Button 
+                  type="button"
+                  variant="outline" 
+                  onClick={() => setShowNaturalLanguageInput(false)} 
+                  className="w-full"
+                >
+                  手动输入
+                </Button>
+              </div>
+            </form>
+          </Form>
         </div>
       ) : (
         <Form {...form}>
