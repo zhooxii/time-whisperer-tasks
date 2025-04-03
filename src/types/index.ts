@@ -11,6 +11,9 @@ export type TaskCategory =
   | "finance" 
   | "education" 
   | "social" 
+  | "entertainment"
+  | "gaming"
+  | "music"
   | "other";
 
 export interface Task {

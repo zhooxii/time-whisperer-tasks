@@ -1,8 +1,8 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { format, isToday, isTomorrow, isBefore } from 'date-fns';
 import { useTaskContext } from '@/context/TaskContext';
-import { Task } from '@/types';
+import { Task, TaskCategory } from '@/types';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import {
@@ -21,17 +21,188 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
-import { Clock, Calendar, Edit, Trash2 } from 'lucide-react';
+import { Clock, Calendar, Edit, Trash2, Film, Briefcase, Home, Music, Book, ShoppingCart, Gamepad, Coffee, Utensils } from 'lucide-react';
 import TaskForm from './TaskForm';
 
 interface TaskListProps {
   closeSidebar?: () => void;
 }
 
+// Function to get icon based on category
+const getCategoryIcon = (category: TaskCategory) => {
+  switch (category) {
+    case 'work':
+      return <Briefcase className="h-3 w-3 mr-1" />;
+    case 'personal':
+      return <Home className="h-3 w-3 mr-1" />;
+    case 'shopping':
+      return <ShoppingCart className="h-3 w-3 mr-1" />;
+    case 'health':
+      return <Coffee className="h-3 w-3 mr-1" />;
+    case 'finance':
+      return <Briefcase className="h-3 w-3 mr-1" />;
+    case 'education':
+      return <Book className="h-3 w-3 mr-1" />;
+    case 'social':
+      return <Utensils className="h-3 w-3 mr-1" />;
+    case 'entertainment':
+      return <Film className="h-3 w-3 mr-1" />;
+    case 'gaming':
+      return <Gamepad className="h-3 w-3 mr-1" />;
+    case 'music':
+      return <Music className="h-3 w-3 mr-1" />;
+    default:
+      return <Calendar className="h-3 w-3 mr-1" />;
+  }
+};
+
+// Function to get background color based on category
+const getCategoryBackgroundColor = (category: TaskCategory) => {
+  switch (category) {
+    case 'work':
+      return 'bg-blue-50 border-l-2 border-blue-400';
+    case 'personal':
+      return 'bg-purple-50 border-l-2 border-purple-400';
+    case 'shopping':
+      return 'bg-green-50 border-l-2 border-green-400';
+    case 'health':
+      return 'bg-rose-50 border-l-2 border-rose-400';
+    case 'finance':
+      return 'bg-slate-50 border-l-2 border-slate-400';
+    case 'education':
+      return 'bg-indigo-50 border-l-2 border-indigo-400';
+    case 'social':
+      return 'bg-amber-50 border-l-2 border-amber-400';
+    case 'entertainment':
+      return 'bg-pink-50 border-l-2 border-pink-400';
+    case 'gaming':
+      return 'bg-cyan-50 border-l-2 border-cyan-400';
+    case 'music':
+      return 'bg-violet-50 border-l-2 border-violet-400';
+    default:
+      return 'bg-gray-50 border-l-2 border-gray-400';
+  }
+};
+
 const TaskList: React.FC<TaskListProps> = ({ closeSidebar }) => {
-  const { tasks, toggleTaskCompletion, deleteTask, setSelectedDate } = useTaskContext();
+  const { tasks, toggleTaskCompletion, deleteTask, setSelectedDate, addTask } = useTaskContext();
   const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
   const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
+  
+  // Add sample tasks if no tasks exist
+  useEffect(() => {
+    if (tasks.length === 0) {
+      const now = new Date();
+      
+      // Sample entertainment tasks
+      const entertainmentTasks = [
+        {
+          title: "Watch new movie release",
+          description: "Check out the latest blockbuster",
+          dueDate: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 2, 19, 0).toISOString(),
+          priority: "medium",
+          category: "entertainment"
+        },
+        {
+          title: "Netflix series marathon",
+          description: "Watch the new season of favorite show",
+          dueDate: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 5, 20, 0).toISOString(),
+          priority: "low",
+          category: "entertainment"
+        },
+        {
+          title: "Gaming session with friends",
+          description: "Play the new multiplayer game",
+          dueDate: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 18, 0).toISOString(),
+          priority: "medium",
+          category: "gaming"
+        },
+        {
+          title: "Listen to new album release",
+          description: "Check out the latest songs from favorite artist",
+          dueDate: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 3, 16, 0).toISOString(),
+          priority: "low",
+          category: "music"
+        }
+      ];
+      
+      // Sample work tasks
+      const workTasks = [
+        {
+          title: "Weekly team meeting",
+          description: "Discuss project progress and roadblocks",
+          dueDate: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 10, 0).toISOString(),
+          priority: "high",
+          category: "work"
+        },
+        {
+          title: "Finish quarterly report",
+          description: "Complete the Q2 performance analysis",
+          dueDate: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 15, 0).toISOString(),
+          priority: "high",
+          category: "work"
+        },
+        {
+          title: "Client presentation preparation",
+          description: "Prepare slides for next week's client meeting",
+          dueDate: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 3, 14, 0).toISOString(),
+          priority: "medium",
+          category: "work"
+        },
+        {
+          title: "Email follow-ups",
+          description: "Respond to pending emails",
+          dueDate: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 9, 0).toISOString(),
+          priority: "medium",
+          category: "work"
+        }
+      ];
+      
+      // Sample life tasks
+      const lifeTasks = [
+        {
+          title: "Grocery shopping",
+          description: "Get fresh vegetables and fruits for the week",
+          dueDate: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 17, 0).toISOString(),
+          priority: "medium",
+          category: "shopping"
+        },
+        {
+          title: "Morning yoga session",
+          description: "30-minute yoga routine",
+          dueDate: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 7, 0).toISOString(),
+          priority: "low",
+          category: "health"
+        },
+        {
+          title: "Dinner with family",
+          description: "At favorite restaurant",
+          dueDate: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 2, 19, 0).toISOString(),
+          priority: "medium",
+          category: "social"
+        },
+        {
+          title: "Read new book chapter",
+          description: "Continue reading the novel",
+          dueDate: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 22, 0).toISOString(),
+          priority: "low",
+          category: "education"
+        },
+        {
+          title: "Pay monthly bills",
+          description: "Rent, utilities, and subscriptions",
+          dueDate: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 5, 10, 0).toISOString(),
+          priority: "high",
+          category: "finance"
+        }
+      ];
+      
+      // Add all sample tasks
+      [...entertainmentTasks, ...workTasks, ...lifeTasks].forEach(task => {
+        addTask(task);
+      });
+    }
+  }, [tasks.length, addTask]);
   
   // Group tasks by their status and due date
   const overdueTasks = tasks.filter(
@@ -69,7 +240,7 @@ const TaskList: React.FC<TaskListProps> = ({ closeSidebar }) => {
       <div 
         key={task.id} 
         className={`p-3 border rounded-md mb-2 ${
-          task.completed ? 'bg-gray-50' : 'bg-white'
+          task.completed ? 'bg-gray-50' : getCategoryBackgroundColor(task.category as TaskCategory)
         } hover:shadow-md transition-all duration-200 animate-fade-in`}
       >
         <div className="flex items-start gap-2">
@@ -107,14 +278,18 @@ const TaskList: React.FC<TaskListProps> = ({ closeSidebar }) => {
                 {task.priority === 'high' ? 'High' : 
                  task.priority === 'medium' ? 'Medium' : 'Low'}
               </Badge>
-              <Badge variant="outline">
+              <Badge variant="outline" className="flex items-center">
+                {getCategoryIcon(task.category as TaskCategory)}
                 {task.category === 'work' ? 'Work' :
                  task.category === 'personal' ? 'Personal' :
                  task.category === 'shopping' ? 'Shopping' :
                  task.category === 'health' ? 'Health' :
                  task.category === 'finance' ? 'Finance' :
                  task.category === 'education' ? 'Education' :
-                 task.category === 'social' ? 'Social' : 'Other'}
+                 task.category === 'social' ? 'Social' :
+                 task.category === 'entertainment' ? 'Entertainment' :
+                 task.category === 'gaming' ? 'Gaming' :
+                 task.category === 'music' ? 'Music' : 'Other'}
               </Badge>
             </div>
           </div>

@@ -6,7 +6,64 @@ import { getDaysInMonth } from '@/utils/dateUtils';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import TaskForm from '@/components/tasks/TaskForm';
 import { cn } from '@/lib/utils';
-import { Calendar as CalendarIcon, Clock, Tag, CheckCircle2 } from 'lucide-react';
+import { Calendar as CalendarIcon, Clock, Tag, CheckCircle2, Film, Briefcase, Home, Music, Book, ShoppingCart, Gamepad, Coffee, Utensils } from 'lucide-react';
+import { TaskCategory } from '@/types';
+
+// Function to get background color based on category
+const getCategoryBackgroundColor = (category: TaskCategory) => {
+  switch (category) {
+    case 'work':
+      return 'bg-blue-100 border-l-2 border-blue-400';
+    case 'personal':
+      return 'bg-purple-100 border-l-2 border-purple-400';
+    case 'shopping':
+      return 'bg-green-100 border-l-2 border-green-400';
+    case 'health':
+      return 'bg-rose-100 border-l-2 border-rose-400';
+    case 'finance':
+      return 'bg-slate-100 border-l-2 border-slate-400';
+    case 'education':
+      return 'bg-indigo-100 border-l-2 border-indigo-400';
+    case 'social':
+      return 'bg-amber-100 border-l-2 border-amber-400';
+    case 'entertainment':
+      return 'bg-pink-100 border-l-2 border-pink-400';
+    case 'gaming':
+      return 'bg-cyan-100 border-l-2 border-cyan-400';
+    case 'music':
+      return 'bg-violet-100 border-l-2 border-violet-400';
+    default:
+      return 'bg-gray-100 border-l-2 border-gray-400';
+  }
+};
+
+// Function to get icon based on category
+const getCategoryIcon = (category: TaskCategory) => {
+  switch (category) {
+    case 'work':
+      return <Briefcase className="h-3 w-3 mr-0.5 text-blue-600" />;
+    case 'personal':
+      return <Home className="h-3 w-3 mr-0.5 text-purple-600" />;
+    case 'shopping':
+      return <ShoppingCart className="h-3 w-3 mr-0.5 text-green-600" />;
+    case 'health':
+      return <Coffee className="h-3 w-3 mr-0.5 text-rose-600" />;
+    case 'finance':
+      return <Briefcase className="h-3 w-3 mr-0.5 text-slate-600" />;
+    case 'education':
+      return <Book className="h-3 w-3 mr-0.5 text-indigo-600" />;
+    case 'social':
+      return <Utensils className="h-3 w-3 mr-0.5 text-amber-600" />;
+    case 'entertainment':
+      return <Film className="h-3 w-3 mr-0.5 text-pink-600" />;
+    case 'gaming':
+      return <Gamepad className="h-3 w-3 mr-0.5 text-cyan-600" />;
+    case 'music':
+      return <Music className="h-3 w-3 mr-0.5 text-violet-600" />;
+    default:
+      return <Clock className="h-3 w-3 mr-0.5 text-gray-600" />;
+  }
+};
 
 const MonthView: React.FC = () => {
   const { tasks, selectedDate, setSelectedDate } = useTaskContext();
@@ -83,16 +140,13 @@ const MonthView: React.FC = () => {
                     key={task.id}
                     className={cn(
                       "text-xs mb-1 p-1 rounded truncate flex items-center gap-1 task-item hover:scale-[1.02] transition-all duration-200 animate-fade-in",
-                      task.completed ? "line-through text-gray-400 bg-gray-100" :
-                      task.priority === 'high' ? "bg-red-100 border-l-2 border-task-high" :
-                      task.priority === 'medium' ? "bg-amber-100 border-l-2 border-task-medium" :
-                      "bg-green-100 border-l-2 border-task-low"
+                      task.completed ? "line-through text-gray-400 bg-gray-100" : getCategoryBackgroundColor(task.category as TaskCategory)
                     )}
                   >
                     {task.completed ? (
                       <CheckCircle2 className="h-3 w-3 text-gray-400" />
                     ) : (
-                      <Clock className="h-3 w-3 text-blue-500" />
+                      getCategoryIcon(task.category as TaskCategory)
                     )}
                     <span>{format(new Date(task.dueDate), 'HH:mm')} {task.title}</span>
                   </div>
