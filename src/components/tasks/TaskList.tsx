@@ -1,8 +1,7 @@
-
 import React, { useState, useEffect } from 'react';
 import { format, isToday, isTomorrow, isBefore } from 'date-fns';
 import { useTaskContext } from '@/context/TaskContext';
-import { Task, TaskCategory } from '@/types';
+import { Task, TaskCategory, TaskPriority } from '@/types';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
 import {
@@ -21,7 +20,16 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
-import { Clock, Calendar, Edit, Trash2, Film, Briefcase, Home, Music, Book, ShoppingCart, Gamepad, Coffee, Utensils } from 'lucide-react';
+import { 
+  Clock, Calendar, Edit, Trash2, Film, Briefcase, 
+  Home, Music, Book, ShoppingCart, Gamepad, Coffee, 
+  Utensils, ChevronDown, ChevronUp 
+} from 'lucide-react';
+import { 
+  Collapsible, 
+  CollapsibleContent, 
+  CollapsibleTrigger 
+} from '@/components/ui/collapsible';
 import TaskForm from './TaskForm';
 
 interface TaskListProps {
@@ -89,6 +97,23 @@ const TaskList: React.FC<TaskListProps> = ({ closeSidebar }) => {
   const [taskToEdit, setTaskToEdit] = useState<Task | null>(null);
   const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
   
+  // State to track which sections are open
+  const [openSections, setOpenSections] = useState({
+    overdue: false,
+    today: true,
+    tomorrow: false,
+    upcoming: false,
+    completed: false
+  });
+  
+  // Toggle section open/closed state
+  const toggleSection = (section: keyof typeof openSections) => {
+    setOpenSections({
+      ...openSections,
+      [section]: !openSections[section]
+    });
+  };
+  
   // Add sample tasks if no tasks exist
   useEffect(() => {
     if (tasks.length === 0) {
@@ -100,29 +125,29 @@ const TaskList: React.FC<TaskListProps> = ({ closeSidebar }) => {
           title: "Watch new movie release",
           description: "Check out the latest blockbuster",
           dueDate: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 2, 19, 0).toISOString(),
-          priority: "medium",
-          category: "entertainment"
+          priority: "medium" as TaskPriority,
+          category: "entertainment" as TaskCategory
         },
         {
           title: "Netflix series marathon",
           description: "Watch the new season of favorite show",
           dueDate: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 5, 20, 0).toISOString(),
-          priority: "low",
-          category: "entertainment"
+          priority: "low" as TaskPriority,
+          category: "entertainment" as TaskCategory
         },
         {
           title: "Gaming session with friends",
           description: "Play the new multiplayer game",
           dueDate: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 18, 0).toISOString(),
-          priority: "medium",
-          category: "gaming"
+          priority: "medium" as TaskPriority,
+          category: "gaming" as TaskCategory
         },
         {
           title: "Listen to new album release",
           description: "Check out the latest songs from favorite artist",
           dueDate: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 3, 16, 0).toISOString(),
-          priority: "low",
-          category: "music"
+          priority: "low" as TaskPriority,
+          category: "music" as TaskCategory
         }
       ];
       
@@ -132,29 +157,29 @@ const TaskList: React.FC<TaskListProps> = ({ closeSidebar }) => {
           title: "Weekly team meeting",
           description: "Discuss project progress and roadblocks",
           dueDate: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 10, 0).toISOString(),
-          priority: "high",
-          category: "work"
+          priority: "high" as TaskPriority,
+          category: "work" as TaskCategory
         },
         {
           title: "Finish quarterly report",
           description: "Complete the Q2 performance analysis",
           dueDate: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 15, 0).toISOString(),
-          priority: "high",
-          category: "work"
+          priority: "high" as TaskPriority,
+          category: "work" as TaskCategory
         },
         {
           title: "Client presentation preparation",
           description: "Prepare slides for next week's client meeting",
           dueDate: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 3, 14, 0).toISOString(),
-          priority: "medium",
-          category: "work"
+          priority: "medium" as TaskPriority,
+          category: "work" as TaskCategory
         },
         {
           title: "Email follow-ups",
           description: "Respond to pending emails",
           dueDate: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 9, 0).toISOString(),
-          priority: "medium",
-          category: "work"
+          priority: "medium" as TaskPriority,
+          category: "work" as TaskCategory
         }
       ];
       
@@ -164,36 +189,36 @@ const TaskList: React.FC<TaskListProps> = ({ closeSidebar }) => {
           title: "Grocery shopping",
           description: "Get fresh vegetables and fruits for the week",
           dueDate: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 17, 0).toISOString(),
-          priority: "medium",
-          category: "shopping"
+          priority: "medium" as TaskPriority,
+          category: "shopping" as TaskCategory
         },
         {
           title: "Morning yoga session",
           description: "30-minute yoga routine",
           dueDate: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 7, 0).toISOString(),
-          priority: "low",
-          category: "health"
+          priority: "low" as TaskPriority,
+          category: "health" as TaskCategory
         },
         {
           title: "Dinner with family",
           description: "At favorite restaurant",
           dueDate: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 2, 19, 0).toISOString(),
-          priority: "medium",
-          category: "social"
+          priority: "medium" as TaskPriority,
+          category: "social" as TaskCategory
         },
         {
           title: "Read new book chapter",
           description: "Continue reading the novel",
           dueDate: new Date(now.getFullYear(), now.getMonth(), now.getDate(), 22, 0).toISOString(),
-          priority: "low",
-          category: "education"
+          priority: "low" as TaskPriority,
+          category: "education" as TaskCategory
         },
         {
           title: "Pay monthly bills",
           description: "Rent, utilities, and subscriptions",
           dueDate: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 5, 10, 0).toISOString(),
-          priority: "high",
-          category: "finance"
+          priority: "high" as TaskPriority,
+          category: "finance" as TaskCategory
         }
       ];
       
@@ -328,32 +353,50 @@ const TaskList: React.FC<TaskListProps> = ({ closeSidebar }) => {
     );
   };
 
-  const renderTaskSection = (title: string, tasksToRender: Task[], badge?: string) => {
+  const renderTaskSection = (title: string, tasksToRender: Task[], sectionKey: keyof typeof openSections, badge?: string) => {
     if (tasksToRender.length === 0) return null;
     
     return (
-      <div className="mb-6 animate-fade-in">
-        <div className="flex items-center mb-2">
-          <h3 className="font-medium text-gray-700">{title}</h3>
-          {badge && (
-            <Badge variant="outline" className="ml-2">
-              {tasksToRender.length}
-            </Badge>
-          )}
-        </div>
-        {tasksToRender.map(renderTask)}
+      <div className="mb-3 animate-fade-in">
+        <Collapsible 
+          open={openSections[sectionKey]} 
+          onOpenChange={() => toggleSection(sectionKey)}
+          className="border rounded-md overflow-hidden"
+        >
+          <CollapsibleTrigger asChild>
+            <div className="flex items-center justify-between p-3 bg-background hover:bg-muted cursor-pointer">
+              <div className="flex items-center">
+                <h3 className="font-medium text-gray-700">{title}</h3>
+                {badge && (
+                  <Badge variant="outline" className="ml-2">
+                    {tasksToRender.length}
+                  </Badge>
+                )}
+              </div>
+              {openSections[sectionKey] ? 
+                <ChevronUp className="h-4 w-4 text-gray-500" /> : 
+                <ChevronDown className="h-4 w-4 text-gray-500" />
+              }
+            </div>
+          </CollapsibleTrigger>
+          <CollapsibleContent className="px-3 pb-2">
+            <div className="mt-2 space-y-2">
+              {tasksToRender.map(renderTask)}
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
       </div>
     );
   };
 
   return (
     <div className="h-full flex flex-col">
-      <div className="flex-1 overflow-y-auto">
-        {renderTaskSection('Overdue', overdueTasks, 'red')}
-        {renderTaskSection('Today', todayTasks)}
-        {renderTaskSection('Tomorrow', tomorrowTasks)}
-        {renderTaskSection('Upcoming', futureTasks)}
-        {renderTaskSection('Completed', completedTasks)}
+      <div className="flex-1 overflow-y-auto p-2">
+        {renderTaskSection('Overdue', overdueTasks, 'overdue', 'red')}
+        {renderTaskSection('Today', todayTasks, 'today')}
+        {renderTaskSection('Tomorrow', tomorrowTasks, 'tomorrow')}
+        {renderTaskSection('Upcoming', futureTasks, 'upcoming')}
+        {renderTaskSection('Completed', completedTasks, 'completed')}
         
         {tasks.length === 0 && (
           <div className="text-center py-8 text-gray-500 animate-fade-in">
