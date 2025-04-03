@@ -3,12 +3,6 @@ import { format, isToday, isTomorrow, isBefore } from 'date-fns';
 import { useTaskContext } from '@/context/TaskContext';
 import { Task, TaskCategory, TaskPriority } from '@/types';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Button } from '@/components/ui/button';
-import {
-  Sheet,
-  SheetContent,
-  SheetTrigger,
-} from '@/components/ui/sheet';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,7 +15,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Badge } from '@/components/ui/badge';
 import { 
-  Clock, Calendar, Edit, Trash2, Film, Briefcase, 
+  Clock, Calendar, Film, Briefcase, 
   Home, Music, Book, ShoppingCart, Gamepad, Coffee, 
   Utensils, ChevronDown, ChevronUp 
 } from 'lucide-react';
@@ -31,6 +25,13 @@ import {
   CollapsibleTrigger 
 } from '@/components/ui/collapsible';
 import TaskForm from './TaskForm';
+import { Button } from '@/components/ui/button';
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+} from '@/components/ui/sheet';
+import { Edit, Trash2 } from 'lucide-react';
 
 interface TaskListProps {
   closeSidebar?: () => void;
@@ -317,36 +318,6 @@ const TaskList: React.FC<TaskListProps> = ({ closeSidebar }) => {
                  task.category === 'music' ? 'Music' : 'Other'}
               </Badge>
             </div>
-          </div>
-          <div className="flex flex-col gap-1">
-            <Sheet open={taskToEdit?.id === task.id} onOpenChange={(open) => !open && setTaskToEdit(null)}>
-              <SheetTrigger asChild>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="h-7 w-7 hover:bg-blue-50 transition-colors" 
-                  onClick={() => setTaskToEdit(task)}
-                >
-                  <Edit className="h-4 w-4" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent>
-                {taskToEdit && (
-                  <TaskForm 
-                    task={taskToEdit} 
-                    onClose={() => setTaskToEdit(null)} 
-                  />
-                )}
-              </SheetContent>
-            </Sheet>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="h-7 w-7 text-red-500 hover:text-red-700 hover:bg-red-50 transition-colors" 
-              onClick={() => setTaskToDelete(task)}
-            >
-              <Trash2 className="h-4 w-4" />
-            </Button>
           </div>
         </div>
       </div>
