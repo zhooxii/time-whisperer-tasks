@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { CalendarViewType } from '@/types';
 import { useTaskContext } from '@/context/TaskContext';
@@ -43,7 +42,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const { theme } = useTheme();
+  const { theme, setTheme } = useTheme();
 
   const handlePrevious = () => {
     const newDate = new Date(selectedDate);
@@ -105,7 +104,6 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
       "min-h-screen flex flex-col bg-background",
       theme === 'dark' ? 'dark' : ''
     )}>
-      {/* Header */}
       <header className={cn(
         "border-b px-4 py-3 flex items-center justify-between sticky top-0 z-10 shadow-sm",
         theme === 'dark' ? 'bg-gray-900/50' : 'bg-blue-50/50'
@@ -206,9 +204,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
         </div>
       </header>
 
-      {/* Main content */}
       <div className="flex flex-1 overflow-hidden">
-        {/* Sidebar - only visible on desktop */}
         <aside className={cn(
           "w-64 border-r p-4 hidden md:block overflow-y-auto",
           theme === 'dark' ? 'bg-gray-900/30' : 'bg-blue-50/30'
@@ -216,9 +212,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
           <TaskList />
         </aside>
 
-        {/* Calendar Area */}
         <main className="flex-1 overflow-x-hidden overflow-y-auto">
-          {/* Calendar Controls */}
           <div className={cn(
             "p-4 flex items-center justify-between border-b sticky top-0 z-10 shadow-sm",
             theme === 'dark' ? 'bg-gray-900' : 'bg-white'
@@ -309,17 +303,14 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
             </DropdownMenu>
           </div>
           
-          {/* Calendar Content */}
           <div className="p-0">
             {children}
           </div>
         </main>
       </div>
 
-      {/* Search Dialog */}
       <SearchDialog open={isSearchOpen} onOpenChange={setIsSearchOpen} />
       
-      {/* Settings Dialog */}
       <SettingsDialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen} />
     </div>
   );
